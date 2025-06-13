@@ -29,6 +29,7 @@ source .venv/bin/activate
 
 Now, install all the necessary Python libraries and their specific versions. These versions have been tested to be compatible with TensorFlow 2.5.0 and the experiments.
 
+```bash
 pip install \
     tensorflow==2.5.0 \
     h5py==3.1.0 \
@@ -54,13 +55,15 @@ pip install \
     dill==0.3.4 \
     torch==1.8.1+cpu \
     torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+```
 
 ## Note on PyTorch: 
 
 The torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 10.2:
 
+```bash
 pip install \
     # ... (rest of the libraries remain the same) \
     torch==1.8.1+cu102 \
     torchvision==0.9.1+cu102 -f https://download.pytorch.org/whl/cu102/torch_stable.html
-
+```
