@@ -4,27 +4,27 @@ This guide provides instructions on how to set up your environment to reproduce 
 
 The following Python libraries and their exact versions are necessary to ensure the stable and error-free execution of the code within this repository, reflecting the environment in which the original experiments were conducted.
 
-# 1. Install a Specific Python Version
+## 1. Install a Specific Python Version
 
 pyenv install 3.9.19
 
-# 2. Set Local Python Version
+## 2. Set Local Python Version
 
 Navigate to the root directory of this repository and set the local Python version. 
 
 pyenv local 3.9.19
 
-# 3. Create and activate a Virtual Environment
+## 3. Create and activate a Virtual Environment
 
 Create a virtual environment named .venv:
 
 python -m venv .venv
 
-Activate the Virtual Environment
+Activate the virtual environment:
 
 source .venv/bin/activate
 
-# 4. Install Required Libraries
+## 4. Install Required Libraries
 
 
 Now, install all the necessary Python libraries and their specific versions. These versions have been tested to be compatible with TensorFlow 2.5.0 and the experiments.
@@ -55,7 +55,7 @@ pip install \
     torch==1.8.1+cpu \
     torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
-# Note on PyTorch: 
+## Note on PyTorch: 
 
 The torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 10.2:
 

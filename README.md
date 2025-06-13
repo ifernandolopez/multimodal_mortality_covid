@@ -6,13 +6,13 @@ This repository contains the necessary code and instructions to reproduce the ex
 
 The paper investigates the use of multi-modal models to predict mortality in COVID-19 patients, leveraging various data sources.
 
-# Note on Code
+## Note on Code
 
 The original code for these experiments, which serves as the basis for this repository, can be downloaded directly from its source: 
 
 https://github.com/theonesp/multimodal_mortality_covid
 
-# Note on Data
+## Note on Data
 
 The experiments provided in this repository are not conducted with the original data directly from the paper. Instead, they utilize the publicly available*COVID-19 Data Shared Learning (CDSL) dataset from PhysioNet, which can be accessed here:
 
