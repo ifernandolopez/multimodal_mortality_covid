@@ -69,3 +69,10 @@ pip install \
     torch==1.8.1+cu122 \
     torchvision==0.9.1+cu122 -f https://download.pytorch.org/whl/cu102/torch_stable.html
 ```
+## 5. Configure CDSL dataset path
+
+Before running this script, ensure the 'CDSL_DATA_PATH' environment variable  is set to the absolute path of your downloaded CDSL dataset from PhysioNet.
+
+The source code will default to your exported path:
+
+DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
