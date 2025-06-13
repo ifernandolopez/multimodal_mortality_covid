@@ -1,5 +1,5 @@
-# Replica el enfoque del paper original,CDLS tiene ficheros JPG, mientras que el estudio usa archivos DICOM como entrada,
-# usando su estructura de carpetas y nombres basada en los campos del archivo CDSL-1.0.0-dicom-metadata.csv
+# Replicates the approach of the original paper. CDLS has JPG files, while the study uses DICOM files as input,
+# using its folder structure and names based on the fields of the CDSL-1.0.0-dicom-metadata.csv file.
 
 import os
 import pandas as pd
@@ -14,33 +14,33 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_auc_score
 
-# Configuración de rutas
-DATA_PATH = "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/"
+# Base path. If the environment variable 'CDSL_DATA_PATH' is not set, it defaults to the specified path
+DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
 IMAGE_DIR = os.path.join(DATA_PATH, "IMAGES")
 METADATA_CSV = os.path.join(DATA_PATH, "CDSL-1.0.0-dicom-metadata.csv")
 PATIENTS_CSV = os.path.join(DATA_PATH, "patient_01.csv")
 
-# Cargar metadatos y pacientes
+# Load metadata and patient data
 meta = pd.read_csv(METADATA_CSV, encoding='latin1')
 patients = pd.read_csv(PATIENTS_CSV, encoding='latin1')
 
-# Usar solo proyecciones tórax PA o AP
+# Use only PA or AP chest projections
 meta = meta[meta['ViewPosition'].isin(['PA', 'AP'])]
-print("Total en metadatos (PA/AP):", len(meta))
+print("Total in metadata (PA/AP):", len(meta))
 
-# Preprocesamiento de imagen
+# Image preprocessing
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-# Cargar modelo DenseNet121 preentrenado
+# Load pre-trained DenseNet121 model
 model = densenet121(pretrained=True)
-model.classifier = torch.nn.Identity()  # eliminar capa final
+model.classifier = torch.nn.Identity()  # remove final layer
 model.eval()
 
-# Extraer embeddings
+# Extract embeddings
 def extract_embedding(path):
     try:
         img = Image.open(path).convert("RGB")
@@ -51,11 +51,11 @@ def extract_embedding(path):
     except Exception as e:
         return None
 
-# Generar embeddings
+# Generate embeddings
 embeddings = []
 ids = []
 
-errores = 0
+errors = 0
 for i, row in tqdm(meta.iterrows(), total=len(meta)):
     img_path = os.path.join(
         IMAGE_DIR,
@@ -68,27 +68,27 @@ for i, row in tqdm(meta.iterrows(), total=len(meta)):
         embeddings.append(emb)
         ids.append(row['patient_id'])
     else:
-        errores += 1
-print("Embeddings generados (imágenes válidas):", len(embeddings))
-print("Errores al abrir imágenes:", errores)
+        errors += 1
+print("Embeddings generated (valid images):", len(embeddings))
+print("Errors opening images:", errors)
 
 X = pd.DataFrame(embeddings)
 X['patient_id'] = ids
 
-# Unir con datos de pacientes
+# Merge with patient data
 X = X.merge(patients[['patient_id', 'destin_discharge']], on='patient_id', how='left')
 
-# Variable objetivo
+# Target variable
 X = X.dropna(subset=['destin_discharge'])
-y = X['destin_discharge'].apply(lambda x: 1 if str(x).strip().lower() in ['death', 'deceased', 'fallecido'] else 0)
+y = X['destin_discharge'].apply(lambda x: 1 if str(x).strip().lower() in ['death', 'deceased', 'fallecido'] else 0) # Kept 'fallecido' for robustness, can be removed if strict English data expected
 
 X = X.drop(columns=['patient_id', 'destin_discharge'])
 
-# Mostrar distribución de clases
-print("Distribución de la variable objetivo (0 = alta, 1 = fallecido):")
+# Show class distribution
+print("Target variable distribution (0 = discharged, 1 = deceased):")
 print(y.value_counts())
 
-# Entrenamiento y evaluación
+# Training and evaluation
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 clf = LogisticRegression(max_iter=1000)
@@ -100,6 +100,6 @@ y_prob = clf.predict_proba(X_test)[:, 1]
 print(classification_report(y_test, y_pred, zero_division=0))
 print("AUC:", roc_auc_score(y_test, y_prob))
 
-# Guardar el modelo en un archivo .pkl
+# Save the model to a .pkl file
 joblib.dump(clf, "1.cxr_wrangling/cdsl_cxr_features_model.pkl")
-print("Modelo guardado en cdsl_cxr_features_model.pkl")
+print("Model saved to cdsl_cxr_features_model.pkl")
