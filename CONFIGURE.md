@@ -73,6 +73,8 @@ pip install \
 
 Before running this script, ensure the 'CDSL_DATA_PATH' environment variable  is set to the absolute path of your downloaded CDSL dataset from PhysioNet.
 
+Example: export CDSL_DATA_PATH=$HOME/physionet.org
+
 The source code will default to your exported path:
 
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
