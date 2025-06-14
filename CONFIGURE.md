@@ -55,19 +55,23 @@ pip install \
     requests==2.25.1 \
     pydicom==2.2.2 \
     dill==0.3.4 \
-    torch==1.8.1+cpu \
-    torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 ## Note on PyTorch: 
 
-The torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 12.2:
+The torch and torchvision packages can be installed with +cpu to ensure CPU-only versions are used. 
+```bash
+pip install \
+    torch==1.8.1+cpu \
+    torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+```
+
+If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 12.2:
 
 ```bash
 pip install \
-    # ... (rest of the libraries remain the same) \
-    torch==1.8.1+cu122 \
-    torchvision==0.9.1+cu122 -f https://download.pytorch.org/whl/cu102/torch_stable.html
+    torch==1.8.1+cu111 \
+    torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
 ```
 ## 5. Configure CDSL dataset path
 
