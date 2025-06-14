@@ -10,13 +10,14 @@ pyenv install 3.9.19
 
 ## 2. Set Local Python Version
 
-Navigate to the root directory of this repository and set the local Python version. 
+Navigate to the multimodal_mortality_covid directory of this repository and set the local Python version. 
 
+cd multimodal_mortality_covid
 pyenv local 3.9.19
 
 ## 3. Create and activate a Virtual Environment
 
-Create a virtual environment named .venv:
+Create a virtual environment named .venv in the multimodal_mortality_covid directory:
 
 python -m venv .venv
 
@@ -54,7 +55,7 @@ pip install \
     protobuf==3.19.0 \
     requests==2.25.1 \
     pydicom==2.2.2 \
-    dill==0.3.4 \
+    dill==0.3.4
 ```
 
 ## Note on PyTorch: 
