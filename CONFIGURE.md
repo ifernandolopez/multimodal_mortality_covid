@@ -110,7 +110,7 @@ pip install \
     seaborn==0.11.2 \
     tableone==0.8.0 \
     fsspec==2021.04.0 \
-    ipykernel==6.0.0 \
+    ipykernel==6.4.0 \
     google-cloud-storage==1.36.2 \
     google-api-core==1.26.0 \
     protobuf==3.19.0 \
