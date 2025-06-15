@@ -85,7 +85,7 @@ cd ~/multimodal_mortality_covid
 source .venv/bin/activate
 ```
 
-## 5. Install Required Libraries
+## 5. Install required libraries
 
 Install the following versions, which are tested for compatibility with TensorFlow 2.5.0 and the experiments:
 
