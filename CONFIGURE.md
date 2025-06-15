@@ -119,7 +119,7 @@ pip install \
     dill==0.3.4
 ```
 
-## 6. Install pytorch
+### Install pytorch
 
 For CPU-only environments, the torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. 
 ```bash
