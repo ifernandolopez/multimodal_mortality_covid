@@ -24,6 +24,10 @@ conda create -n python_3_9_19 python=3.9.19
 
 This creates the environment at $HOME/.conda/envs/python_3_9_19
 
+Unlike pyenv, conda can install native dependencies along with python precompiled binaries (called "conda packages") that bundle both the python code and the native libraries they depend on.
+
+So, when you install a package like pandas or numpy with Conda, it automatically includes the necessary native components like liblzma, libffi, or libopenblas, even if those are missing from your system. 
+
 ## 2. Activate Python 3.9.19
 
 You must activate the correct Python version in each session using one of the following options.
