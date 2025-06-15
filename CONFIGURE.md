@@ -4,10 +4,10 @@ This guide provides instructions on how to set up your environment to reproduce 
 
 The following Python libraries and their exact versions are necessary to ensure the stable and error-free execution of the code within this repository, reflecting the environment in which the original experiments were conducted.
 
-First of all, clone the repository:
+First of all, clone this repository:
 
 ```bash
-git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+git clone https://github.com/ifernandolopez/multimodal_mortality_covid
 ```
 
 ## 1. Install python 3.9.19 (first time only)
