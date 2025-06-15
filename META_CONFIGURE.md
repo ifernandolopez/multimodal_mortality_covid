@@ -2,7 +2,9 @@
 
 Clone the repository:
 
+```bash
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+```
 
 Configure it in .profile:
 
@@ -16,8 +18,12 @@ eval "$(pyenv init -)"
 
 ## To configure Conda:
 
+Clone the repository:
+
+```bash
 export PATH="/opt/tljh/user/condabin:$PATH"
 source /opt/tljh/user/etc/profile.d/conda.sh
+```
 
 ## To install and configure uv:
 
@@ -35,7 +41,9 @@ chmod +x uv
 
 Add it to the PATH:
 
+```bash
 export PATH="$HOME/.local/bin/uv-x86_64-unknown-linux-gnu:$PATH"
+
 
 
 

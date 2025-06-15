@@ -4,7 +4,13 @@ This guide provides instructions on how to set up your environment to reproduce 
 
 The following Python libraries and their exact versions are necessary to ensure the stable and error-free execution of the code within this repository, reflecting the environment in which the original experiments were conducted.
 
-## 1. Install Python 3.9.19 (first time only)
+First of all, clone the repository:
+
+```bash
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+```
+
+## 1. Install python 3.9.19 (first time only)
 
 Choose one of the following options depending on your system permissions:
 
@@ -12,15 +18,19 @@ Choose one of the following options depending on your system permissions:
 
 Recommended option if you have permission to install system libraries:
 
+```bash
 pyenv install 3.9.19
+```
 
-This installs Python under $HOME/.pyenv/versions/3.9.19
+This installs python under $HOME/.pyenv/versions/3.9.19
 
 ### Using conda
 
 Use this option if you can't install native libraries system-wide as conda is able to install needed native libraries:
 
+```bash
 conda create -n python_3_9_19 python=3.9.19
+```
 
 This creates the environment at $HOME/.conda/envs/python_3_9_19
 
@@ -28,16 +38,18 @@ Unlike pyenv, conda can install native dependencies along with python precompile
 
 So, when you install a package like pandas or numpy with Conda, it automatically includes the necessary native components like liblzma, libffi, or libopenblas, even if those are missing from your system. 
 
-## 2. Activate Python 3.9.19
+## 2. Activate python 3.9.19
 
-You must activate the correct Python version in each session using one of the following options.
+You must activate the correct python version in each session using one of the following options.
 
 ### Using pyenv (set once)
 
-From the repository directory set the local Python version:
+From the repository directory set the local python version:
 
+```bash
 cd ~/multimodal_mortality_covid
 pyenv local 3.9.19
+```
 
 The option local  activates Python 3.9.19 only within this folder.
 
@@ -45,25 +57,33 @@ The option local  activates Python 3.9.19 only within this folder.
 
 With conda you have to activate conda in each session to use python 3.9.19 executing:
 
+```bash
 conda activate python_3_9_19
+```
 
 And deactivate it at the end of the session with:
 
+```bash
 conda deactivate
+```
 
 ## 3. Create a virtual environment (once)
 
-After activating Python 3.9.19, create a virtual environment named .venv in the directory:
+After activating python 3.9.19, create a virtual environment named .venv in the directory:
 
+```bash
 cd ~/multimodal_mortality_covid
 python -m venv .venv
+```
 
 ## 4. Activate the virtual environment (every session)
 
 Activate the virtual environment:
 
+```bash
 cd ~/multimodal_mortality_covid
 source .venv/bin/activate
+```
 
 ## 5. Install Required Libraries
 
@@ -121,11 +141,15 @@ pip install \
 
 Set the CDSL_DATA_PATH environment variable to the path where you downloaded the dataset from PhysioNet:
 
+```bash
 export CDSL_DATA_PATH=$HOME/physionet.org/files/covid-data-shared-learning/1.0.0/
+```
 
 The code will then use this path instead of the default:
 
+```python
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
+```
 
 ## 7. Run examples
 
@@ -133,5 +157,7 @@ To replicates the approach of the original paper Navigate to a subfolder and run
 
 For instance, to execute the second example use:
 
+```bash
 cd ~/multimodal_mortality_covid/2.ehr_data_wrangling
 python cdsl_structured.py
+```
