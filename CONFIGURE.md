@@ -42,7 +42,7 @@ So, when you install a package like pandas or numpy with Conda, it automatically
 
 You must activate the correct python version in each session using one of the following options.
 
-### Using pyenv (set once)
+### Option 1: Using pyenv (set once)
 
 From the repository directory set the local python version:
 
@@ -53,7 +53,7 @@ pyenv local 3.9.19
 
 The option local  activates Python 3.9.19 only within this folder.
 
-### Using conda (each session)
+### Option 2: Using conda (each session)
 
 With conda you have to activate conda in each session to use python 3.9.19 executing:
 
@@ -153,9 +153,19 @@ DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/f
 
 ## 7. Run examples
 
-To replicates the approach of the original paper Navigate to a subfolder and run the scripts. 
+Before running any script, make sure the virtual environment .venv is activated:
 
-For instance, to execute the second example use:
+```bash
+source .venv/bin/activate
+```
+
+And optionally conda:
+
+```bash
+conda activate python_3_9_19
+```
+
+Example for running the structured EHR pipeline:
 
 ```bash
 cd ~/multimodal_mortality_covid/2.ehr_data_wrangling
