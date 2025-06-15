@@ -43,7 +43,7 @@ Add it to the PATH:
 
 ```bash
 export PATH="$HOME/.local/bin/uv-x86_64-unknown-linux-gnu:$PATH"
-
+```
 
 
 

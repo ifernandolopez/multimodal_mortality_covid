@@ -92,7 +92,7 @@ Install the following versions, which are tested for compatibility with TensorFl
 ```bash
 cd ~/multimodal_mortality_covid
 
-pip install setuptools wheel # Do not upgrade pip, only install setuptools
+pip install setuptools==58.1.0 wheel==0.45.1 # Do not upgrade pip, only install these packages
 
 pip install \
     tensorflow==2.5.0 \
