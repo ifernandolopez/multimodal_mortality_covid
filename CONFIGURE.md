@@ -4,34 +4,71 @@ This guide provides instructions on how to set up your environment to reproduce 
 
 The following Python libraries and their exact versions are necessary to ensure the stable and error-free execution of the code within this repository, reflecting the environment in which the original experiments were conducted.
 
-## 1. Install a Specific Python Version
+## 1. Install Python 3.9.19 (first time only)
+
+Choose one of the following options depending on your system permissions:
+
+### Using pyenv
+
+Recommended option if you have permission to install system libraries:
 
 pyenv install 3.9.19
 
-## 2. Set Local Python Version
+This installs Python under $HOME/.pyenv/versions/3.9.19
 
-Navigate to the multimodal_mortality_covid directory of this repository and set the local Python version. 
+### Using conda
 
-cd multimodal_mortality_covid
+Use this option if you can't install native libraries system-wide as conda is able to install needed native libraries:
+
+conda create -n python_3_9_19 python=3.9.19
+
+This creates the environment at $HOME/.conda/envs/python_3_9_19
+
+## 2. Activate Python 3.9.19
+
+You must activate the correct Python version in each session using one of the following options.
+
+### Using pyenv (set once)
+
+From the repository directory set the local Python version:
+
+cd ~/multimodal_mortality_covid
 pyenv local 3.9.19
 
-## 3. Create and activate a Virtual Environment
+The option local  activates Python 3.9.19 only within this folder.
 
-Create a virtual environment named .venv in the multimodal_mortality_covid directory:
+### Using conda (each session)
 
+With conda you have to activate conda in each session to use python 3.9.19 executing:
+
+conda activate python_3_9_19
+
+And deactivate it at the end of the session with:
+
+conda deactivate
+
+## 3. Create a virtual environment (once)
+
+After activating Python 3.9.19, create a virtual environment named .venv in the directory:
+
+cd ~/multimodal_mortality_covid
 python -m venv .venv
+
+## 4. Activate the virtual environment (every session)
 
 Activate the virtual environment:
 
+cd ~/multimodal_mortality_covid
 source .venv/bin/activate
 
-## 4. Install Required Libraries
+## 5. Install Required Libraries
 
-
-Now, install all the necessary Python libraries and their specific versions. These versions have been tested to be compatible with TensorFlow 2.5.0 and the experiments.
+Install the following versions, which are tested for compatibility with TensorFlow 2.5.0 and the experiments:
 
 ```bash
-pip install setuptools # Do not upgrade pip, only install setuptools
+cd ~/multimodal_mortality_covid
+
+pip install setuptools wheel # Do not upgrade pip, only install setuptools
 
 pip install \
     tensorflow==2.5.0 \
@@ -58,28 +95,39 @@ pip install \
     dill==0.3.4
 ```
 
-## Note on PyTorch: 
+## 6. Install pytorch
 
-The torch and torchvision packages can be installed with +cpu to ensure CPU-only versions are used. 
+For CPU-only environments, the torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. 
 ```bash
+cd ~/multimodal_mortality_covid
+
 pip install \
     torch==1.8.1+cpu \
     torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 12.2:
+If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 11.1:
 
 ```bash
 pip install \
     torch==1.8.1+cu111 \
     torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
 ```
-## 5. Configure CDSL dataset path
+## 6. Configure CDSL dataset path
 
-Before running this script, ensure the 'CDSL_DATA_PATH' environment variable  is set to the absolute path of your downloaded CDSL dataset from PhysioNet.
+Set the CDSL_DATA_PATH environment variable to the path where you downloaded the dataset from PhysioNet:
 
-Example: export CDSL_DATA_PATH=$HOME/physionet.org
+export CDSL_DATA_PATH=$HOME/physionet.org/files/covid-data-shared-learning/1.0.0/
 
-The source code will default to your exported path:
+The code will then use this path instead of the default:
 
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
+
+## 7. Run examples
+
+To replicates the approach of the original paper Navigate to a subfolder and run the scripts. 
+
+For instance, to execute the second example use:
+
+cd ~/multimodal_mortality_covid/2.ehr_data_wrangling
+python cdsl_structured.py

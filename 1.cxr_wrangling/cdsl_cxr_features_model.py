@@ -2,6 +2,7 @@
 # using its folder structure and names based on the fields of the CDSL-1.0.0-dicom-metadata.csv file.
 
 import os
+import pathlib
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
@@ -19,6 +20,8 @@ DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/f
 IMAGE_DIR = os.path.join(DATA_PATH, "IMAGES")
 METADATA_CSV = os.path.join(DATA_PATH, "CDSL-1.0.0-dicom-metadata.csv")
 PATIENTS_CSV = os.path.join(DATA_PATH, "patient_01.csv")
+SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
+MODEL_PATH = SCRIPT_DIR / "cdsl_cxr_features_model.pkl"
 
 # Load metadata and patient data
 meta = pd.read_csv(METADATA_CSV, encoding='latin1')
@@ -101,5 +104,5 @@ print(classification_report(y_test, y_pred, zero_division=0))
 print("AUC:", roc_auc_score(y_test, y_prob))
 
 # Save the model to a .pkl file
-joblib.dump(clf, "1.cxr_wrangling/cdsl_cxr_features_model.pkl")
-print("Model saved to cdsl_cxr_features_model.pkl")
+joblib.dump(model, MODEL_PATH)
+print(f"Model saved to {MODEL_PATH}")

@@ -1,4 +1,5 @@
 import os
+import pathlib
 import pandas as pd
 import numpy as np
 import joblib
@@ -9,6 +10,8 @@ from sklearn.metrics import classification_report, roc_auc_score
 
 # Base path. If the environment variable 'CDSL_DATA_PATH' is not set, it defaults to the specified path
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
+SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
+MODEL_PATH = SCRIPT_DIR / "cdsl_cxr_features_model.pkl"
 
 # Load main structured data with safe encoding and no warnings
 patients = pd.read_csv(DATA_PATH + "patient_01.csv", encoding='latin1', low_memory=False)
@@ -58,5 +61,5 @@ print(classification_report(y_test, y_pred))
 print("AUC:", roc_auc_score(y_test, y_prob))
 
 # Save the structured model
-joblib.dump(model, "2.ehr_data_wrangling/cdsl_structured_model.pkl")
-print("Model saved to cdsl_structured_model.pkl")
+joblib.dump(model, MODEL_PATH)
+print(f"Model saved to {MODEL_PATH}")
