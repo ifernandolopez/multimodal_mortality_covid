@@ -166,17 +166,8 @@ Replace pip with uv pip if using uv.
 
 ### Install pytorch
 
-#### CPU version
 
-For CPU-only environments, the torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. 
-```bash
-
-pip install \
-    torch==1.8.1+cpu \
-    torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-```
-
-#### CUDA version
+#### Option A: CUDA version
 
 If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 11.1:
 
@@ -184,6 +175,16 @@ If you have a compatible GPU and wish to leverage it, please refer to the offici
 pip install \
     torch==1.8.1+cu111 \
     torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
+```
+
+#### Option B: CPU version
+
+For CPU-only environments, the torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. 
+```bash
+
+pip install \
+    torch==1.8.1+cpu \
+    torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 Use uv pip if you're managing packages with uv.
