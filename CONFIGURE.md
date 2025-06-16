@@ -30,7 +30,7 @@ Use this if you have permission to install system-level libraries (e.g. libffi, 
 pyenv install 3.9.19
 ```
 
-This installs Python under $HOME/.pyenv/versions/3.9.19 and allows you to set it locally with a .python-version file.
+This installs Python under $HOME/.pyenv/versions/3.9.19. You can then activate it locally by running pyenv local 3.9.19 in the repository directory.
 
 ### Option 2: uv (modern, fast package manager)
 
@@ -114,7 +114,7 @@ uv venv .venv
 
 ## 5. Activate the virtual environment (every session)
 
-After creating the virtual environment in step 3, you must activate it at the start of each session. The activation step is the same for all options:
+After creating the virtual environment in step 4, you must activate it at the start of each session. The activation step is the same for all options:
 
 ```bash
 cd multimodal_mortality_covid
@@ -178,8 +178,8 @@ pip install \
 #### Option B: CPU version
 
 For CPU-only environments, the torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. 
-```bash
 
+```bash
 pip install \
     torch==1.8.1+cpu \
     torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
