@@ -47,7 +47,7 @@ Create a .python-version file in the project directory. The pinned version will 
 
 ### Option 3: Using conda
 
-Use this option if you can't install native libraries system-wide as conda is able to install needed native libraries:
+Use this option if you can't install native libraries system-wide (e.g., on a shared server without root access) because conda is able to install needed native libraries:
 
 ```bash
 conda create -n python_3_9_19 python=3.9.19
@@ -55,7 +55,7 @@ conda create -n python_3_9_19 python=3.9.19
 
 This creates the environment at $HOME/.conda/envs/python_3_9_19
 
-Unlike pyenv, conda can install native dependencies along with python precompiled binaries (called "conda packages") that bundle both the python code and the native libraries they depend on.
+Unlike pyenv or uv, conda is able to install native dependencies along with python precompiled binaries (called "conda packages") that bundle both the python code and the native libraries they depend on.
 
 So, when you install a package like pandas or numpy with Conda, it automatically includes the necessary native components like liblzma, libffi, or libopenblas, even if those are missing from your system. 
 
@@ -96,7 +96,7 @@ conda deactivate
 
 After activating python 3.9.19, create a virtual environment named .venv in the directory. The steps differ slightly depending on the setup tool.
 
-# Option 1: pynv or conda
+### Option 1: pynv or conda
 
 Once python 3.9.19 is active (via pyenv local or conda activate), create a standard virtual environment in the project directory:
 
@@ -105,11 +105,13 @@ cd ~/multimodal_mortality_covid
 python -m venv .venv
 ```
 
-# Option 2: uv
+### Option 2: uv
 
 If you're using uv, create the virtual environment as follows:
 
+```bash
 uv venv .venv
+```
 
 ## 4. Activate the virtual environment (every session)
 
@@ -122,7 +124,7 @@ source .venv/bin/activate
 
 ## 5. Install required libraries
 
-Make sure .venv is activated. Use pip with pyenv or conda. and uv pip with uv.
+Use `pip` with pyenv or conda, and `uv pip` with uv.
 
 Install base tools. Do not upgrade pip, only install these packages:
 
@@ -134,6 +136,7 @@ uv pip install setuptools==58.1.0 wheel==0.45.1
 
 Install the following versions, which are tested for compatibility with TensorFlow 2.5.0 and the experiments:
 
+```bash
 pip install \
     tensorflow==2.5.0 \
     h5py==3.1.0 \
