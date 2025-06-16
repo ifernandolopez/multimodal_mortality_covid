@@ -63,7 +63,7 @@ So, when you install a package like pandas or numpy with Conda, it automatically
 
 You must activate the correct python version in each session using one of the following options.
 
-### Option 1: Using pyenv (set once)
+### Option 1: Using pyenv
 
 From the repository directory set the local python version:
 
@@ -72,21 +72,21 @@ cd multimodal_mortality_covid
 pyenv local 3.9.19
 ```
 
-The option local activates Python 3.9.19 only within this folder.
+This activates Python 3.9.19 automatically whenever you're inside this folder.
 
 ### Option 2: Using uv
 
-No additional activation is needed beyond being inside the project directory.
+No manual activation is needed. The pinned python version in .python-version is used automatically when inside the project directory.
 
-### Option 3: Using conda (each session)
+### Option 3: Using conda
 
-With conda you have to activate conda in each session to use python 3.9.19 executing:
+You need to activate the environment manually at the start of each session:
 
 ```bash
 conda activate python_3_9_19
 ```
 
-And deactivate it at the end of the session with:
+And deactivate it at the end of the session:
 
 ```bash
 conda deactivate
@@ -116,7 +116,7 @@ uv venv .venv
 
 Before using the environment, you must activate it at the beginning of every session.
 
-If you are using conda, activate the Python 3.9.19 environment first:
+If you are using conda, activate the python 3.9.19 environment first:
 
 ```bash
 conda activate python_3_9_19
