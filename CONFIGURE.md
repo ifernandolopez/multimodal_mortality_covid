@@ -96,7 +96,7 @@ conda deactivate
 
 After activating python 3.9.19, create a virtual environment named .venv in the directory. The steps differ slightly depending on the setup tool.
 
-### Option 1: pyenv or conda
+### Option 1 or 3: pyenv or conda
 
 Once python 3.9.19 is active (via pyenv local or conda activate), create a standard virtual environment in the project directory:
 
