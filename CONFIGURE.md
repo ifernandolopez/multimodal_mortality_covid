@@ -92,7 +92,7 @@ And deactivate it at the end of the session:
 conda deactivate
 ```
 
-## 4. Create a virtual environment (once)
+## 4. Create a virtual environment (first time only)
 
 After activating python 3.9.19, create a virtual environment named .venv in the directory. The steps differ slightly depending on the setup tool.
 
@@ -116,7 +116,7 @@ uv venv .venv
 
 Before using the environment, you must activate it at the beginning of every session.
 
-If you are using conda, activate the python 3.9.19 environment first:
+If you are using conda, activate the conda python 3.9.19 environment first:
 
 ```bash
 conda activate python_3_9_19
@@ -129,7 +129,7 @@ cd multimodal_mortality_covid
 source .venv/bin/activate
 ```
 
-## 6. Install required libraries
+## 6. Install required libraries (first time only)
 
 Use `pip` with pyenv or conda, and `uv pip` with uv.
 
@@ -211,7 +211,7 @@ DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/f
 
 ## 8. Run examples
 
-Before running any script, make sure the virtual environment .venv is activated:
+Make sure .venv is still active. If not, activate it again with:
 
 ```bash
 source .venv/bin/activate
