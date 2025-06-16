@@ -30,7 +30,7 @@ Use this if you have permission to install system-level libraries (e.g. libffi, 
 pyenv install 3.9.19
 ```
 
-Create a .python-version file and installs python under $HOME/.pyenv/versions/3.9.19
+This installs Python under $HOME/.pyenv/versions/3.9.19 and allows you to set it locally with a .python-version file.
 
 ### Option 2: uv (modern, fast package manager)
 
@@ -39,7 +39,7 @@ Use this if you prefer a reproducible, modern uv workflow. Use only if you have 
 From the root of the repository:
 
 ```bash
-cd ~/multimodal_mortality_covid
+cd multimodal_mortality_covid
 uv init --python 3.9.19
 ```
 Create a .python-version file in the project directory. The pinned version will be used automatically for all python and uv commands within this directory and subdirectories.
@@ -59,7 +59,7 @@ Unlike pyenv or uv, conda is able to install native dependencies along with pyth
 
 So, when you install a package like pandas or numpy with Conda, it automatically includes the necessary native components like liblzma, libffi, or libopenblas, even if those are missing from your system. 
 
-## 2. Activate python 3.9.19
+## 3. Activate python 3.9.19
 
 You must activate the correct python version in each session using one of the following options.
 
@@ -68,7 +68,7 @@ You must activate the correct python version in each session using one of the fo
 From the repository directory set the local python version:
 
 ```bash
-cd ~/multimodal_mortality_covid
+cd multimodal_mortality_covid
 pyenv local 3.9.19
 ```
 
@@ -92,16 +92,15 @@ And deactivate it at the end of the session with:
 conda deactivate
 ```
 
-## 3. Create a virtual environment (once)
+## 4. Create a virtual environment (once)
 
 After activating python 3.9.19, create a virtual environment named .venv in the directory. The steps differ slightly depending on the setup tool.
 
-### Option 1: pynv or conda
+### Option 1: pyenv or conda
 
 Once python 3.9.19 is active (via pyenv local or conda activate), create a standard virtual environment in the project directory:
 
 ```bash
-cd ~/multimodal_mortality_covid
 python -m venv .venv
 ```
 
@@ -113,16 +112,16 @@ If you're using uv, create the virtual environment as follows:
 uv venv .venv
 ```
 
-## 4. Activate the virtual environment (every session)
+## 5. Activate the virtual environment (every session)
 
 After creating the virtual environment in step 3, you must activate it at the start of each session. The activation step is the same for all options:
 
 ```bash
-cd ~/multimodal_mortality_covid
+cd multimodal_mortality_covid
 source .venv/bin/activate
 ```
 
-## 5. Install required libraries
+## 6. Install required libraries
 
 Use `pip` with pyenv or conda, and `uv pip` with uv.
 
@@ -166,7 +165,6 @@ Replace pip with uv pip if using uv.
 
 ### Install pytorch
 
-
 #### Option A: CUDA version
 
 If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 11.1:
@@ -189,7 +187,7 @@ pip install \
 
 Use uv pip if you're managing packages with uv.
 
-## 6. Configure CDSL dataset path
+## 7. Configure CDSL dataset path
 
 Set the CDSL_DATA_PATH environment variable to the path where you downloaded the dataset from PhysioNet:
 
@@ -203,7 +201,7 @@ The code will then use this path instead of the default:
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
 ```
 
-## 7. Run examples
+## 8. Run examples
 
 Before running any script, make sure the virtual environment .venv is activated:
 
@@ -220,6 +218,6 @@ conda activate python_3_9_19
 Example for running the structured EHR pipeline:
 
 ```bash
-cd ~/multimodal_mortality_covid/2.ehr_data_wrangling
+cd multimodal_mortality_covid/2.ehr_data_wrangling
 python cdsl_structured.py
 ```
