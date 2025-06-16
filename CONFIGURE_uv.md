@@ -1,8 +1,8 @@
-# Configuration Guide
+# Configuration Guide with uv
 
-This guide provides instructions on how to set up your environment to reproduce the experiments presented in the paper "Developing and Validating Multi-Modal Models for Mortality Prediction in COVID-19 Patients: a Multi-center Retrospective Study."
+This guide describes how to configure the environment using uv, a fast Python package manager that can handle both packages and Python versions. 
 
-The following Python libraries and their exact versions are necessary to ensure the stable and error-free execution of the code within this repository, reflecting the environment in which the original experiments were conducted.
+uv does not install native system libraries. It relies on the system to provide any required native components (e.g. liblzma, libffi, libopenblas). Therefore, uv should only be used if you have permission to install the necessary system libraries beforehand, or if they are already available on your system.
 
 First of all, clone this repository:
 
@@ -12,71 +12,24 @@ git clone https://github.com/ifernandolopez/multimodal_mortality_covid
 
 ## 1. Install python 3.9.19 (first time only)
 
-Choose one of the following options depending on your system permissions:
-
-### Using pyenv
-
-Recommended option if you have permission to install system libraries:
-
-```bash
-pyenv install 3.9.19
-```
-
-This installs python under $HOME/.pyenv/versions/3.9.19
-
-### Using conda
-
-Use this option if you can't install native libraries system-wide as conda is able to install needed native libraries:
-
-```bash
-conda create -n python_3_9_19 python=3.9.19
-```
-
-This creates the environment at $HOME/.conda/envs/python_3_9_19
-
-Unlike pyenv, conda can install native dependencies along with python precompiled binaries (called "conda packages") that bundle both the python code and the native libraries they depend on.
-
-So, when you install a package like pandas or numpy with Conda, it automatically includes the necessary native components like liblzma, libffi, or libopenblas, even if those are missing from your system. 
-
-## 2. Activate python 3.9.19
-
-You must activate the correct python version in each session using one of the following options.
-
-### Option 1: Using pyenv (set once)
-
-From the repository directory set the local python version:
+From the root of the repository
 
 ```bash
 cd ~/multimodal_mortality_covid
-pyenv local 3.9.19
+uv init --python 3.9.19
 ```
 
-The option local  activates Python 3.9.19 only within this folder.
+Create a .python-version file in the project directory. The pinned version will be used automatically for all python and uv commands within this directory and subdirectories.
 
-### Option 2: Using conda (each session)
+## 2.  Create the virtual environment (once)
 
-With conda you have to activate conda in each session to use python 3.9.19 executing:
+The following command creates a local virtual environment using the pinned python version.
 
 ```bash
-conda activate python_3_9_19
+uv venv .venv
 ```
 
-And deactivate it at the end of the session with:
-
-```bash
-conda deactivate
-```
-
-## 3. Create a virtual environment (once)
-
-After activating python 3.9.19, create a virtual environment named .venv in the directory:
-
-```bash
-cd ~/multimodal_mortality_covid
-python -m venv .venv
-```
-
-## 4. Activate the virtual environment (every session)
+## 3. Activate the virtual environment (every session)
 
 Activate the virtual environment:
 
@@ -90,12 +43,13 @@ source .venv/bin/activate
 Install base tools:
 
 ```bash
-pip install setuptools==58.1.0 wheel==0.45.1 # Do not upgrade pip, only install these packages
+uv pip install setuptools==58.1.0 wheel==0.45.1 # Do not upgrade pip, only install these packages
 ```
 
 Install the following versions, which are tested for compatibility with TensorFlow 2.5.0 and the experiments:
 
-pip install \
+```bash
+uv pip install \
     tensorflow==2.5.0 \
     h5py==3.1.0 \
     numpy==1.19.5 \
@@ -124,7 +78,7 @@ pip install \
 
 For CPU-only environments, the torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. 
 ```bash
-pip install \
+uv pip install \
     torch==1.8.1+cpu \
     torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
@@ -132,7 +86,7 @@ pip install \
 If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 11.1:
 
 ```bash
-pip install \
+uv pip install \
     torch==1.8.1+cu111 \
     torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
 ```
