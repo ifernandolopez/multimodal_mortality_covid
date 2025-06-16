@@ -114,7 +114,15 @@ uv venv .venv
 
 ## 5. Activate the virtual environment (every session)
 
-After creating the virtual environment in step 4, you must activate it at the start of each session. The activation step is the same for all options:
+Before using the environment, you must activate it at the beginning of every session.
+
+If you are using conda, activate the Python 3.9.19 environment first:
+
+```bash
+conda activate python_3_9_19
+```
+
+Then, activate the virtual environment (applies to all options):
 
 ```bash
 cd multimodal_mortality_covid
