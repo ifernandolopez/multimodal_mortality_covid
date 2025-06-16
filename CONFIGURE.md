@@ -4,27 +4,48 @@ This guide provides instructions on how to set up your environment to reproduce 
 
 The following Python libraries and their exact versions are necessary to ensure the stable and error-free execution of the code within this repository, reflecting the environment in which the original experiments were conducted.
 
-First of all, clone this repository:
+You can choose among three setup methods depending on your system permissions and preferences:
+
+- Option A: pyenv + pip (legacy, traditional approach)
+- Option B: uv (modern and fast package/environment manager)
+- Option C: conda (recommended if you can't install native system libraries)
+
+All options aim to install Python 3.9.19 and the same set of dependencies.
+
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/ifernandolopez/multimodal_mortality_covid
 ```
 
-## 1. Install python 3.9.19 (first time only)
+## 2. Install python 3.9.19 (first time only)
 
-Choose one of the following options depending on your system permissions:
+There are three supported methods to install python 3.9.19 depending on your system configuration and permissions:
 
-### Using pyenv
+### Option 1: pyenv (legacy, traditional approach)
 
-Recommended option if you have permission to install system libraries:
+Use this if you have permission to install system-level libraries (e.g. libffi, liblzma, etc.):
 
 ```bash
 pyenv install 3.9.19
 ```
 
-This installs python under $HOME/.pyenv/versions/3.9.19
+Create a .python-version file and installs python under $HOME/.pyenv/versions/3.9.19
 
-### Using conda
+### Option 2: uv (modern, fast package manager)
+
+Use this if you prefer a reproducible, modern uv workflow. Use only if you have permission to install native libraries.
+
+From the root of the repository:
+
+```bash
+cd ~/multimodal_mortality_covid
+uv init --python 3.9.19
+```
+Create a .python-version file in the project directory. The pinned version will be used automatically for all python and uv commands within this directory and subdirectories.
+
+
+### Option 3: Using conda
 
 Use this option if you can't install native libraries system-wide as conda is able to install needed native libraries:
 
@@ -51,9 +72,13 @@ cd ~/multimodal_mortality_covid
 pyenv local 3.9.19
 ```
 
-The option local  activates Python 3.9.19 only within this folder.
+The option local activates Python 3.9.19 only within this folder.
 
-### Option 2: Using conda (each session)
+### Option 2: Using uv
+
+No additional activation is needed beyond being inside the project directory.
+
+### Option 3: Using conda (each session)
 
 With conda you have to activate conda in each session to use python 3.9.19 executing:
 
@@ -69,16 +94,26 @@ conda deactivate
 
 ## 3. Create a virtual environment (once)
 
-After activating python 3.9.19, create a virtual environment named .venv in the directory:
+After activating python 3.9.19, create a virtual environment named .venv in the directory. The steps differ slightly depending on the setup tool.
+
+# Option 1: pynv or conda
+
+Once python 3.9.19 is active (via pyenv local or conda activate), create a standard virtual environment in the project directory:
 
 ```bash
 cd ~/multimodal_mortality_covid
 python -m venv .venv
 ```
 
+# Option 2: uv
+
+If you're using uv, create the virtual environment as follows:
+
+uv venv .venv
+
 ## 4. Activate the virtual environment (every session)
 
-Activate the virtual environment:
+After creating the virtual environment in step 3, you must activate it at the start of each session. The activation step is the same for all options:
 
 ```bash
 cd ~/multimodal_mortality_covid
@@ -87,10 +122,14 @@ source .venv/bin/activate
 
 ## 5. Install required libraries
 
-Install base tools:
+Make sure .venv is activated. Use pip with pyenv or conda. and uv pip with uv.
+
+Install base tools. Do not upgrade pip, only install these packages:
 
 ```bash
-pip install setuptools==58.1.0 wheel==0.45.1 # Do not upgrade pip, only install these packages
+pip install setuptools==58.1.0 wheel==0.45.1
+# or
+uv pip install setuptools==58.1.0 wheel==0.45.1
 ```
 
 Install the following versions, which are tested for compatibility with TensorFlow 2.5.0 and the experiments:
@@ -120,14 +159,21 @@ pip install \
     dill==0.3.4
 ```
 
+Replace pip with uv pip if using uv.
+
 ### Install pytorch
+
+#### CPU version
 
 For CPU-only environments, the torch and torchvision packages are installed with +cpu to ensure CPU-only versions are used. 
 ```bash
+
 pip install \
     torch==1.8.1+cpu \
     torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
+
+#### CUDA version
 
 If you have a compatible GPU and wish to leverage it, please refer to the official PyTorch installation guide for GPU-enabled versions that match your CUDA setup. For example, for CUDA 11.1:
 
@@ -136,6 +182,9 @@ pip install \
     torch==1.8.1+cu111 \
     torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
 ```
+
+Use uv pip if you're managing packages with uv.
+
 ## 6. Configure CDSL dataset path
 
 Set the CDSL_DATA_PATH environment variable to the path where you downloaded the dataset from PhysioNet:
