@@ -11,6 +11,7 @@ from sklearn.metrics import classification_report, roc_auc_score
 # Base path. If the environment variable 'CDSL_DATA_PATH' is not set, it defaults to the specified path
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
+EHR_PATH = SCRIPT_DIR / "cdsl_structured_ehr.pkl"
 MODEL_PATH = SCRIPT_DIR / "cdsl_structured_model.pkl"
 
 # Load main structured data with safe encoding and no warnings
@@ -74,8 +75,8 @@ features['patient_id'] = patients['patient_id']
 ehr_data = pd.merge(structured_df[['patient_id', 'target']], features, on='patient_id')
 
 # Save as pickle for later use in the fusion model
-ehr_data.to_pickle(SCRIPT_DIR / "cdsl_structured_ehr.pkl")
-print(f"Structured features saved to {SCRIPT_DIR / 'cdsl_structured_ehr.pkl'}")
+ehr_data.to_pickle(EHR_PATH)
+print(f"Structured features saved to {EHR_PATH}")
 
 
 # Save the structured model
