@@ -21,10 +21,6 @@ labs = pd.read_csv(DATA_PATH + "lab_06.csv", encoding='latin1', low_memory=False
 meds = pd.read_csv(DATA_PATH + "medication_05.csv", encoding='latin1', low_memory=False)
 dx = pd.read_csv(DATA_PATH + "diagnosis_hosp_03.csv", encoding='latin1', low_memory=False)
 
-# Preview data
-print(patients.head())
-print(vitals.head())
-
 # Aggregate vital signs and labs by patient
 vitals_agg = vitals.groupby('patient_id').mean(numeric_only=True).reset_index()
 labs_agg = labs.groupby('patient_id').mean(numeric_only=True).reset_index()
