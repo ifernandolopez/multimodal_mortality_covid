@@ -54,7 +54,9 @@ def extract_embedding(path):
     except Exception as e:
         return None
 
-# Generate embeddings
+# Generate embeddings: Embeddings make it possible to feed traditional models (such as logistic regression),
+# which cannot handle raw images directly, by providing compact numerical representations. 
+# This enables tasks like classification or prediction to be performed on image-based data.
 embeddings = []
 ids = []
 
@@ -103,6 +105,15 @@ y_prob = clf.predict_proba(X_test)[:, 1]
 print(classification_report(y_test, y_pred, zero_division=0))
 print("AUC:", roc_auc_score(y_test, y_prob))
 
-# Save the model to a .pkl file
-joblib.dump(model, MODEL_PATH)
-print(f"Model saved to {MODEL_PATH}")
+# Save the embeddings and labels along with patient_id to a .pkl file
+embedding_df = X.copy()
+embedding_df['target'] = y.values
+embedding_df['patient_id'] = ids  # Add this line
+
+# Move patient_id and target to front
+cols = ['patient_id', 'target'] + [col for col in embedding_df.columns if col not in ['patient_id', 'target']]
+embedding_df = embedding_df[cols]
+
+joblib.dump(embedding_df, MODEL_PATH)
+print(f"Embeddings with labels saved to {MODEL_PATH}")
+

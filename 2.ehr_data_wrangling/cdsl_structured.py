@@ -11,7 +11,7 @@ from sklearn.metrics import classification_report, roc_auc_score
 # Base path. If the environment variable 'CDSL_DATA_PATH' is not set, it defaults to the specified path
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
-MODEL_PATH = SCRIPT_DIR / "cdsl_cxr_features_model.pkl"
+MODEL_PATH = SCRIPT_DIR / "cdsl_structured_model.pkl"
 
 # Load main structured data with safe encoding and no warnings
 patients = pd.read_csv(DATA_PATH + "patient_01.csv", encoding='latin1', low_memory=False)
@@ -59,6 +59,24 @@ y_prob = model.predict_proba(X_test)[:, 1]
 
 print(classification_report(y_test, y_pred))
 print("AUC:", roc_auc_score(y_test, y_prob))
+
+# Save preprocessed structured data (with patient_id and binary target) for fusion step
+structured_df = patients[['patient_id', 'destin_discharge']].copy()
+structured_df['target'] = structured_df['destin_discharge'].apply(
+    lambda x: 1 if str(x).strip().lower() in ['death', 'deceased', 'fallecido'] else 0
+)
+
+# Prepare numerical features (exclude patient_id and target from X; reattach patient_id)
+features = X.copy()
+features['patient_id'] = patients['patient_id']
+
+# Merge target with features to form the final DataFrame for fusion
+ehr_data = pd.merge(structured_df[['patient_id', 'target']], features, on='patient_id')
+
+# Save as pickle for later use in the fusion model
+ehr_data.to_pickle(SCRIPT_DIR / "cdsl_structured_ehr.pkl")
+print(f"Structured features saved to {SCRIPT_DIR / 'cdsl_structured_ehr.pkl'}")
+
 
 # Save the structured model
 joblib.dump(model, MODEL_PATH)
