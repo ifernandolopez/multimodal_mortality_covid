@@ -51,17 +51,15 @@ def extract_embedding(path):
         with torch.no_grad():
             embedding = model(img_tensor).squeeze().numpy()
         return embedding
-    except Exception as e:
+    except Exception:
         return None
 
-# Generate embeddings: Embeddings make it possible to feed traditional models (such as logistic regression),
-# which cannot handle raw images directly, by providing compact numerical representations. 
-# This enables tasks like classification or prediction to be performed on image-based data.
+# Generate embeddings
 embeddings = []
 ids = []
 
 errors = 0
-for i, row in tqdm(meta.iterrows(), total=len(meta)):
+for _, row in tqdm(meta.iterrows(), total=len(meta)):
     img_path = os.path.join(
         IMAGE_DIR,
         row['patient_group_folder_id'],
@@ -77,17 +75,22 @@ for i, row in tqdm(meta.iterrows(), total=len(meta)):
 print("Embeddings generated (valid images):", len(embeddings))
 print("Errors opening images:", errors)
 
-X = pd.DataFrame(embeddings)
-X['patient_id'] = ids
+# Create DataFrame with embeddings and IDs
+embedding_df = pd.DataFrame(embeddings)
+embedding_df['patient_id'] = ids
 
 # Merge with patient data
-X = X.merge(patients[['patient_id', 'destin_discharge']], on='patient_id', how='left')
+embedding_df = embedding_df.merge(patients[['patient_id', 'destin_discharge']], on='patient_id', how='left')
 
-# Target variable
-X = X.dropna(subset=['destin_discharge'])
-y = X['destin_discharge'].apply(lambda x: 1 if str(x).strip().lower() in ['death', 'deceased', 'fallecido'] else 0) # Kept 'fallecido' for robustness, can be removed if strict English data expected
+# Filter and define target variable
+embedding_df = embedding_df.dropna(subset=['destin_discharge'])
+embedding_df['target'] = embedding_df['destin_discharge'].apply(
+    lambda x: 1 if str(x).strip().lower() in ['death', 'deceased', 'fallecido'] else 0
+)
 
-X = X.drop(columns=['patient_id', 'destin_discharge'])
+# Prepare feature matrix and labels
+X = embedding_df.drop(columns=['patient_id', 'destin_discharge', 'target'])
+y = embedding_df['target']
 
 # Show class distribution
 print("Target variable distribution (0 = discharged, 1 = deceased):")
@@ -105,15 +108,10 @@ y_prob = clf.predict_proba(X_test)[:, 1]
 print(classification_report(y_test, y_pred, zero_division=0))
 print("AUC:", roc_auc_score(y_test, y_prob))
 
-# Save the embeddings and labels along with patient_id to a .pkl file
-embedding_df = X.copy()
-embedding_df['target'] = y.values
-embedding_df['patient_id'] = ids  # Add this line
-
-# Move patient_id and target to front
-cols = ['patient_id', 'target'] + [col for col in embedding_df.columns if col not in ['patient_id', 'target']]
+# Reorder columns for saving
+cols = ['patient_id', 'target'] + [col for col in X.columns]
 embedding_df = embedding_df[cols]
 
+# Save final DataFrame
 joblib.dump(embedding_df, MODEL_PATH)
 print(f"Embeddings with labels saved to {MODEL_PATH}")
-
