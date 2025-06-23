@@ -97,7 +97,7 @@ print("Target variable distribution (0 = discharged, 1 = deceased):")
 print(y.value_counts())
 
 # Training and evaluation
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
 clf = LogisticRegression(max_iter=1000)
 clf.fit(X_train, y_train)

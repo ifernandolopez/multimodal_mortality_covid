@@ -44,7 +44,7 @@ X = X.select_dtypes(include=[np.number]).fillna(0)
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42, stratify=y)
 
 # Logistic regression model as baseline
 model = LogisticRegression(max_iter=1000)
