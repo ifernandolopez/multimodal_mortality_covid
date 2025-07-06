@@ -50,13 +50,13 @@ def evaluate_model(cxr_path, model_name=""):
 
     print(f"Fusion dataset shape: {X.shape}")
 
-    # Estandarización
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    # Split before standardization to avoid data leakage
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, stratify=y, random_state=42
-    )
+    # Standardize based on training set
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
 
     BATCH_SIZE = 64
     EPOCHS = 30
