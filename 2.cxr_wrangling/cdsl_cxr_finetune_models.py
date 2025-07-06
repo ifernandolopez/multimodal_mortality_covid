@@ -12,7 +12,9 @@ from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
 from torchvision.models import densenet121
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, roc_auc_score
+
+# If you encounter a segmentation fault or GPU memory issues, execute this script with CUDA disabled:
+# CUDA_VISIBLE_DEVICES="" python cdsl_cxr_finetune_models.py
 
 # Paths
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
