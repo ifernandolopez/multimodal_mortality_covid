@@ -11,9 +11,8 @@ from sklearn.metrics import classification_report, roc_auc_score
 
 # Paths
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
-CXR_PATH = SCRIPT_DIR / "../1.cxr_wrangling/cdsl_cxr_features_model.pkl"
-EHR_PATH = SCRIPT_DIR / "../2.ehr_data_wrangling/cdsl_structured_ehr.pkl"
-FUSION_MODEL_PATH = SCRIPT_DIR / "cdsl_fusion_model.pt"
+EHR_PATH = SCRIPT_DIR / "../1.ehr_data_wrangling/cdsl_structured_ehr.pkl"
+CXR_PATH = SCRIPT_DIR / "../2.cxr_wrangling/cdsl_cxr_features_model.pkl"
 
 # Load structured (EHR) features
 if not EHR_PATH.exists():
@@ -91,6 +90,4 @@ with torch.no_grad():
 print(classification_report(y_test, y_pred, zero_division=0))
 print("AUC:", roc_auc_score(y_test, y_pred_prob))
 
-# Save model
-torch.save(model.state_dict(), FUSION_MODEL_PATH)
-print(f"Fusion model saved to {FUSION_MODEL_PATH}")
+
