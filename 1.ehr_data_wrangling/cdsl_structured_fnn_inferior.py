@@ -14,7 +14,7 @@ from sklearn.metrics import classification_report, roc_auc_score
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 EHR_PATH = SCRIPT_DIR / "cdsl_structured_ehr.pkl"
-MODEL_PATH = SCRIPT_DIR / "cdsl_structured_model.pt"
+MODEL_PATH = SCRIPT_DIR / "cdsl_structured_model.pkl"
 
 # Load data
 patients = pd.read_csv(DATA_PATH + "patient_01.csv", encoding='latin1', low_memory=False)
