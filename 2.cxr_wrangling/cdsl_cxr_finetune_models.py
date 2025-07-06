@@ -94,6 +94,7 @@ train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, nu
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=False)
 
 # Model setup
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
     model = densenet121(pretrained=True)
     num_features = model.classifier.in_features
@@ -111,7 +112,6 @@ def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
     for param in trainable_params:
         param.requires_grad = True
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     criterion = nn.BCELoss()
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=LR)
@@ -160,5 +160,5 @@ def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
     print(f"Saved finetuned embeddings to {outfile}")
 
 # Selected finetunning deeps
-finetune_and_save_embeddings(last_unfreeze_layer=9, name_suffix="last10")
-finetune_and_save_embeddings(last_unfreeze_layer=8, name_suffix="last50")
+finetune_and_save_embeddings(last_unfreeze_layer=10, name_suffix="last10")
+finetune_and_save_embeddings(last_unfreeze_layer=50, name_suffix="last50")
