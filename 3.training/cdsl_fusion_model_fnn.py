@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, roc_auc_score
 import numpy as np
 
@@ -44,8 +45,12 @@ def evaluate_model(cxr_path, model_name=""):
 
     print(f"Fusion dataset shape: {X.shape}")
 
+    # Estandarización
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, stratify=y, random_state=42
+        X_scaled, y, test_size=0.2, stratify=y, random_state=42
     )
 
     BATCH_SIZE = 64
@@ -84,8 +89,10 @@ def evaluate_model(cxr_path, model_name=""):
     print("AUC:", roc_auc_score(y_test, y_pred_prob))
 
 
+# Evaluación base
 evaluate_model(CXR_BASE_PATH, model_name="Base")
 
+# Evaluación modelos fine-tuned
 for suffix in ["last10", "last50"]:
     path = pathlib.Path(f"{CXR_FINETUNE_PATH_PREFIX}{suffix}.pkl")
     evaluate_model(path, model_name=f"Fine-tuned {suffix}")
