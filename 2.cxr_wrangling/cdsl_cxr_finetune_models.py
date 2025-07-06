@@ -23,7 +23,7 @@ SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 MODEL_PATH_PREFIX = SCRIPT_DIR / f"cdsl_cxr_finetune_model_"
 
 # Parameters
-BATCH_SIZE = 32
+BATCH_SIZE = 16 # Reduced to limit GPU/CPU memory usage
 EPOCHS = 10
 LR = 1e-4
 
@@ -87,8 +87,9 @@ class CXRDataset(Dataset):
 train_df, test_df = train_test_split(meta, test_size=0.2, stratify=meta['target'], random_state=42)
 train_dataset = CXRDataset(train_df, IMAGE_DIR, transform)
 test_dataset = CXRDataset(test_df, IMAGE_DIR, transform)
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
+# Set num_workers=0 and pin_memory=False to prevent excessive memory use
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0, pin_memory=False)
+test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=False)
 
 # Model setup
 def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
@@ -126,30 +127,24 @@ def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
             optimizer.step()
             running_loss += loss.item()
         print(f"Epoch {epoch+1}/{EPOCHS}, Loss: {running_loss/len(train_loader):.4f}")
+        torch.cuda.empty_cache() # Free up unused GPU memory after each epoch
 
-    # Embedding extraction
+    # Embedding extraction controlling memory usage
     model.classifier = nn.Identity()
     model.eval()
-    embeddings = []
-    ids = []
+    embeddings, ids = [], []
+
+    eval_dataset = CXRDataset(meta, IMAGE_DIR, transform)
+    eval_loader = DataLoader(eval_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=False)
+
     with torch.no_grad():
-        for i, row in tqdm(meta.iterrows(), total=len(meta)):
-            img_path = os.path.join(
-                IMAGE_DIR,
-                row['patient_group_folder_id'],
-                row['patient_folder_id'],
-                row['study_id'],
-                row['image_id'] + ".jpg"
-            )
-            if not os.path.exists(img_path):
-                continue
-            try:
-                image = transform(Image.open(img_path).convert("RGB")).unsqueeze(0).to(device)
-                embedding = model(image).squeeze().cpu().numpy()
-                embeddings.append(embedding)
-                ids.append(row['patient_id'])
-            except Exception:
-                continue
+        for images, _ in tqdm(eval_loader, total=len(eval_loader)):
+            images = images.to(device)
+            embs = model(images).cpu().numpy()
+            batch_ids = meta.iloc[eval_dataset.valid_indices[:len(embs)]]['patient_id'].values
+            embeddings.extend(embs)
+            ids.extend(batch_ids)
+            eval_dataset.valid_indices = eval_dataset.valid_indices[len(embs):]
 
     emb_df = pd.DataFrame(embeddings)
     emb_df['patient_id'] = ids
@@ -158,8 +153,8 @@ def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
     emb_df = emb_df[cols]
     outfile = pathlib.Path(str(MODEL_PATH_PREFIX) + f"{name_suffix}.pkl")
     joblib.dump(emb_df, outfile)
-    print(f"Saved finetunned embeddings to {outfile}")
+    print(f"Saved finetuned embeddings to {outfile}")
 
-# Example usage
+# Selected finetunning deeps
 finetune_and_save_embeddings(last_unfreeze_layer=9, name_suffix="last10")
 finetune_and_save_embeddings(last_unfreeze_layer=8, name_suffix="last50")
