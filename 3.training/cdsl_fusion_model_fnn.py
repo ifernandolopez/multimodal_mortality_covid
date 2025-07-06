@@ -38,12 +38,9 @@ def evaluate_model(cxr_path, model_name=""):
 
     merged = ehr_data.merge(cxr_data, on="patient_id", suffixes=('_ehr', '_cxr'))
 
-    # Identificar correctamente la columna de target y eliminarla después
     target_col = "target_ehr" if "target_ehr" in merged.columns else "target"
     y = merged[target_col].values.astype(np.float32)
-
-    features = merged.drop(columns=["patient_id", target_col])
-    X = features.values.astype(np.float32)
+    X = merged.drop(columns=["patient_id", target_col]).values.astype(np.float32)
 
     print(f"Fusion dataset shape: {X.shape}")
 
