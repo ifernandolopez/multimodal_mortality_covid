@@ -94,10 +94,10 @@ def evaluate_model(cxr_path, model_name=""):
     print("AUC:", roc_auc_score(y_test, y_pred_prob))
 
 
-# Evaluación base
+# Evaluate base model
 evaluate_model(CXR_BASE_PATH, model_name="Base")
 
-# Evaluación modelos fine-tuned
+# Evaluate fine-tuned models
 for suffix in ["last10", "last50"]:
     path = pathlib.Path(f"{CXR_FINETUNE_PATH_PREFIX}{suffix}.pkl")
     evaluate_model(path, model_name=f"Fine-tuned {suffix}")
