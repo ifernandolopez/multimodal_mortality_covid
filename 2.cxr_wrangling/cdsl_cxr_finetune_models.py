@@ -143,10 +143,12 @@ def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
         for images, _ in tqdm(eval_loader, total=len(eval_loader)):
             images = images.to(device)
             embs = model(images).cpu().numpy()
-            batch_ids = meta.iloc[eval_dataset.valid_indices[:len(embs)]]['patient_id'].values
+            start_idx = len(ids)
+            end_idx = start_idx + len(embs)
+            batch_indices = eval_dataset.valid_indices[start_idx:end_idx]
+            batch_ids = meta.iloc[batch_indices]['patient_id'].values
             embeddings.extend(embs)
             ids.extend(batch_ids)
-            eval_dataset.valid_indices = eval_dataset.valid_indices[len(embs):]
 
     emb_df = pd.DataFrame(embeddings)
     emb_df['patient_id'] = ids
