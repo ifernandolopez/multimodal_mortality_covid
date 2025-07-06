@@ -9,6 +9,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, roc_auc_score
 import numpy as np
 
+# If you encounter a segmentation fault or GPU memory issues, execute this script with CUDA disabled:
+# CUDA_VISIBLE_DEVICES="" python cdsl_cxr_finetune_models.py
+
+# Paths
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 EHR_PATH = SCRIPT_DIR / "../1.ehr_data_wrangling/cdsl_structured_ehr.pkl"
 CXR_BASE_PATH = SCRIPT_DIR / "../2.cxr_wrangling/cdsl_cxr_features_model.pkl"
