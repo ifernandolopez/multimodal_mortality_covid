@@ -9,8 +9,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, roc_auc_score
 import numpy as np
 
-# If you encounter a segmentation fault or GPU memory issues, execute this script with CUDA disabled:
-# CUDA_VISIBLE_DEVICES="" python cdsl_fusion_model.py
+# I always obtain a segmentation fault or GPU memory issues, to use CPU I execute this script with CUDA disabled:
+# CUDA_VISIBLE_DEVICES="" python cdsl_cxr_finetune_models.py
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 # Paths
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent

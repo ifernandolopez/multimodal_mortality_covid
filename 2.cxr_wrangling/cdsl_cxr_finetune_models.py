@@ -13,8 +13,9 @@ import torchvision.transforms as transforms
 from torchvision.models import densenet121
 from sklearn.model_selection import train_test_split
 
-# If you encounter a segmentation fault or GPU memory issues, execute this script with CUDA disabled:
+# I always obtain a segmentation fault or GPU memory issues, to use CPU I execute this script with CUDA disabled:
 # CUDA_VISIBLE_DEVICES="" python cdsl_cxr_finetune_models.py
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 # Paths
 DATA_PATH = os.getenv("CDSL_DATA_PATH", "/autor/storage/datasets/physionet.org/files/covid-data-shared-learning/1.0.0/")
@@ -97,6 +98,10 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def finetune_and_save_embeddings(name_suffix, unfreeze_mode, unfreeze_param=None):
+    outfile = pathlib.Path(str(MODEL_PATH_PREFIX) + f"{name_suffix}.pkl")
+    if outfile.exists():
+        print(f"File {outfile} already exists. Skipping...")
+        return
     model = densenet121(pretrained=True)
     num_features = model.classifier.in_features
     model.classifier = nn.Sequential(
@@ -171,14 +176,13 @@ def finetune_and_save_embeddings(name_suffix, unfreeze_mode, unfreeze_param=None
     emb_df = emb_df.merge(targets[['patient_id', 'target']], on='patient_id', how='left')
     cols = ['patient_id', 'target'] + [col for col in emb_df.columns if col not in ['patient_id', 'target']]
     emb_df = emb_df[cols]
-    outfile = pathlib.Path(str(MODEL_PATH_PREFIX) + f"{name_suffix}.pkl")
     joblib.dump(emb_df, outfile)
     print(f"Saved finetuned embeddings to {outfile}")
 
 # Selected finetunning deeps
 finetune_and_save_embeddings(name_suffix="param355", unfreeze_mode="params", unfreeze_param=355)
-#finetune_and_save_embeddings(name_suffix="layers5", unfreeze_mode="layers", unfreeze_param=5)
-#finetune_and_save_embeddings(name_suffix="layers10", unfreeze_mode="layers", unfreeze_param=10)
-#finetune_and_save_embeddings(name_suffix="layers50", unfreeze_mode="layers", unfreeze_param=50)
-#finetune_and_save_embeddings(name_suffix="block4", unfreeze_mode="block4")
+finetune_and_save_embeddings(name_suffix="layers5", unfreeze_mode="layers", unfreeze_param=5)
+finetune_and_save_embeddings(name_suffix="layers10", unfreeze_mode="layers", unfreeze_param=10)
+finetune_and_save_embeddings(name_suffix="layers50", unfreeze_mode="layers", unfreeze_param=50)
+finetune_and_save_embeddings(name_suffix="block4", unfreeze_mode="block4")
 
