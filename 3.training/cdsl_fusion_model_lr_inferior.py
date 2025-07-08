@@ -59,7 +59,7 @@ cxr_base = joblib.load(CXR_BASE_PATH)
 evaluate_model(ehr_df, cxr_base, label="Frozen CXR")
 
 # Evaluate fine-tuned variants
-for suffix in ["last 5", "last10", "last50","block4"]:
+for suffix in ["param355", "layers5", "layers10", "layers50", "block4"]:
     path = CXR_FINETUNE_PATH_PREFIX.parent / f"cdsl_cxr_finetune_model_{suffix}.pkl"
     if path.exists():
         cxr_ft = joblib.load(path)

@@ -102,6 +102,6 @@ def evaluate_model(cxr_path, model_name=""):
 evaluate_model(CXR_BASE_PATH, model_name="Base")
 
 # Evaluate fine-tuned models
-for suffix in ["last5", "last10", "last50","block4"]:
+for suffix in ["param355", "layers5", "layers10", "layers50", "block4"]:
     path = pathlib.Path(f"{CXR_FINETUNE_PATH_PREFIX}{suffix}.pkl")
     evaluate_model(path, model_name=f"Fine-tuned {suffix}")
