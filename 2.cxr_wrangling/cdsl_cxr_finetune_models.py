@@ -95,7 +95,8 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num
 
 # Model setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
+
+def finetune_and_save_embeddings(name_suffix, unfreeze_mode="lastN", last_unfreeze_layer=None):
     model = densenet121(pretrained=True)
     num_features = model.classifier.in_features
     model.classifier = nn.Sequential(
@@ -103,15 +104,24 @@ def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
         nn.Sigmoid()
     )
 
-    # Freeze all layers first
+    # Freeze all layers
     for param in model.parameters():
         param.requires_grad = False
 
-    # Unfreeze last X parameters
-    trainable_params = list(model.parameters())[-last_unfreeze_layer:]
-    for param in trainable_params:
-        param.requires_grad = True
+    if unfreeze_mode == "lastN" and last_unfreeze_layer is not None:
+        # Unfreeze last N parameters
+        trainable_params = list(model.parameters())[-last_unfreeze_layer:]
+        for param in trainable_params:
+            param.requires_grad = True
 
+    elif unfreeze_mode == "block4":
+        # Unfreeze DenseBlock4 and norm5
+        for name, child in model.features.named_children():
+            if name == "denseblock4" or name == "norm5":
+                for param in child.parameters():
+                    param.requires_grad = True
+    
+    # Optimizer
     model.to(device)
     criterion = nn.BCELoss()
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=LR)
@@ -160,5 +170,7 @@ def finetune_and_save_embeddings(last_unfreeze_layer: int, name_suffix: str):
     print(f"Saved finetuned embeddings to {outfile}")
 
 # Selected finetunning deeps
-finetune_and_save_embeddings(last_unfreeze_layer=10, name_suffix="last10")
-finetune_and_save_embeddings(last_unfreeze_layer=50, name_suffix="last50")
+# finetune_and_save_embeddings(name_suffix="last10", unfreeze_mode="lastN", last_unfreeze_layer=10)
+# finetune_and_save_embeddings(name_suffix="last50", unfreeze_mode="lastN", last_unfreeze_layer=50)
+finetune_and_save_embeddings(name_suffix="block4", unfreeze_mode="block4")
+
