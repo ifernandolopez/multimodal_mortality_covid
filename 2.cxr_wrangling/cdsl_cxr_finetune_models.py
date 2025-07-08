@@ -96,7 +96,7 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num
 # Model setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def finetune_and_save_embeddings(name_suffix, unfreeze_mode="lastN", last_unfreeze_layer=None):
+def finetune_and_save_embeddings(name_suffix, unfreeze_mode, unfreeze_param=None):
     model = densenet121(pretrained=True)
     num_features = model.classifier.in_features
     model.classifier = nn.Sequential(
@@ -104,22 +104,28 @@ def finetune_and_save_embeddings(name_suffix, unfreeze_mode="lastN", last_unfree
         nn.Sigmoid()
     )
 
-    # Freeze all layers
-    for param in model.parameters():
-        param.requires_grad = False
+    if unfreeze_mode == "params":
+            # Unfreeze the last N parameters by index
+            for i, param in enumerate(model.parameters()):
+                if i >= unfreeze_param:
+                    param.requires_grad = True
 
-    if unfreeze_mode == "lastN" and last_unfreeze_layer is not None:
-        # Unfreeze last N parameters
-        trainable_params = list(model.parameters())[-last_unfreeze_layer:]
-        for param in trainable_params:
-            param.requires_grad = True
-
-    elif unfreeze_mode == "block4":
-        # Unfreeze DenseBlock4 and norm5
-        for name, child in model.features.named_children():
-            if name == "denseblock4" or name == "norm5":
+    elif unfreeze_mode == "layers":
+        # Unfreeze the last N child modules of the features block
+        for i, child in enumerate(model.features.children()):
+            if i >= unfreeze_param:
                 for param in child.parameters():
                     param.requires_grad = True
+
+    elif unfreeze_mode == "block4":
+        # Unfreeze denseblock4 and following layers
+        for name, child in model.features.named_children():
+            if name in ["denseblock4", "norm5"]:
+                for param in child.parameters():
+                    param.requires_grad = True
+
+    else:
+        raise ValueError(f"Unsupported unfreeze_mode: {unfreeze_mode}")
     
     # Optimizer
     model.to(device)
@@ -170,8 +176,9 @@ def finetune_and_save_embeddings(name_suffix, unfreeze_mode="lastN", last_unfree
     print(f"Saved finetuned embeddings to {outfile}")
 
 # Selected finetunning deeps
-finetune_and_save_embeddings(name_suffix="last5", unfreeze_mode="lastN", last_unfreeze_layer=5)
-finetune_and_save_embeddings(name_suffix="last10", unfreeze_mode="lastN", last_unfreeze_layer=10)
-finetune_and_save_embeddings(name_suffix="last50", unfreeze_mode="lastN", last_unfreeze_layer=50)
-finetune_and_save_embeddings(name_suffix="block4", unfreeze_mode="block4")
+finetune_and_save_embeddings(name_suffix="param355", unfreeze_mode="params", unfreeze_param=355)
+#finetune_and_save_embeddings(name_suffix="layers5", unfreeze_mode="layers", unfreeze_param=5)
+#finetune_and_save_embeddings(name_suffix="layers10", unfreeze_mode="layers", unfreeze_param=10)
+#finetune_and_save_embeddings(name_suffix="layers50", unfreeze_mode="layers", unfreeze_param=50)
+#finetune_and_save_embeddings(name_suffix="block4", unfreeze_mode="block4")
 
