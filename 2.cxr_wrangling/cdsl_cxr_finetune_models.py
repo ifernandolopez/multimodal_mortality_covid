@@ -25,9 +25,9 @@ SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 MODEL_PATH_PREFIX = SCRIPT_DIR / f"cdsl_cxr_finetune_model_"
 
 # Parameters
-BATCH_SIZE = 16 # Reduced to limit GPU/CPU memory usage
-EPOCHS = 10
-LR = 1e-4
+BATCH_SIZE = 64
+EPOCHS = 20
+LR = 1e-5
 
 # Image preprocessing
 transform = transforms.Compose([
@@ -170,7 +170,8 @@ def finetune_and_save_embeddings(name_suffix, unfreeze_mode="lastN", last_unfree
     print(f"Saved finetuned embeddings to {outfile}")
 
 # Selected finetunning deeps
-# finetune_and_save_embeddings(name_suffix="last10", unfreeze_mode="lastN", last_unfreeze_layer=10)
-# finetune_and_save_embeddings(name_suffix="last50", unfreeze_mode="lastN", last_unfreeze_layer=50)
+finetune_and_save_embeddings(name_suffix="last5", unfreeze_mode="lastN", last_unfreeze_layer=5)
+finetune_and_save_embeddings(name_suffix="last10", unfreeze_mode="lastN", last_unfreeze_layer=10)
+finetune_and_save_embeddings(name_suffix="last50", unfreeze_mode="lastN", last_unfreeze_layer=50)
 finetune_and_save_embeddings(name_suffix="block4", unfreeze_mode="block4")
 
