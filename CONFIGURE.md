@@ -72,7 +72,12 @@ cd multimodal_mortality_covid
 pyenv local 3.9.19
 ```
 
-This activates Python 3.9.19 automatically whenever you're inside this folder.
+This activates Python 3.9.19 automatically whenever you're inside this folder. The version is pinned in .python-version.:
+
+```bash
+cat ./vstudio/multimodal_mortality_covid/.python-version
+3.9.19
+```
 
 ### Option 2: Using uv
 
