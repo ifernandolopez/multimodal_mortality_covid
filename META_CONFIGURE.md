@@ -1,4 +1,10 @@
-## To install pyenv:
+This file provides supplementary instructions for installing and configuring environment managers  (pyenv, conda, uv).
+
+For the main project setup, see `CONFIGURE.md`.
+
+Use the steps here only if these tools are not already available on your system.
+
+## Install and configure pyenv
 
 Clone the repository:
 
@@ -6,7 +12,7 @@ Clone the repository:
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 ```
 
-Configure it in .profile:
+Add it to your shell configuration (~/.profile):
 
 ```bash
 # ~/.profile
@@ -16,18 +22,20 @@ eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 ```
 
-## To configure Conda:
+Reload your shell or run source ~/.profile for the changes to take effect.
 
-Clone the repository:
+## Configure conda
+
+If conda is already installed system-wide, you may need to update your environment variables so it is accessible:
 
 ```bash
 export PATH="/opt/tljh/user/condabin:$PATH"
 source /opt/tljh/user/etc/profile.d/conda.sh
 ```
 
-## To install and configure uv:
+## Install and configure uv
 
-Download the binary:
+Download the latest binary:
 
 ```bash
 mkdir -p ~/.local/bin
@@ -39,12 +47,13 @@ cd ~/.local/bin/uv-x86_64-unknown-linux-gnu
 chmod +x uv
 ```
 
-Add it to the PATH:
+Add `uv` to the PATH:
 
 ```bash
 export PATH="$HOME/.local/bin/uv-x86_64-unknown-linux-gnu:$PATH"
 ```
 
+Now uv will be available as a command in your terminal.
 
 
 
