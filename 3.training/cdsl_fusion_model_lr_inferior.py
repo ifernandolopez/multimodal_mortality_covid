@@ -29,14 +29,15 @@ def evaluate_model(ehr_df, cxr_df, label):
     X = merged.drop(columns=['patient_id', 'target'])
     X = X.select_dtypes(include=[np.number]).fillna(0)
 
-    # Scale features
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-
-    # Train/test split
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, random_state=42, stratify=y
+    # 1) Split without scaling
+    X_train_raw, X_test_raw, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
     )
+
+    # 2) Scale only on train
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train_raw)
+    X_test = scaler.transform(X_test_raw)
 
     # Train and evaluate fusion model with LR
     model = LogisticRegression(max_iter=1000)
