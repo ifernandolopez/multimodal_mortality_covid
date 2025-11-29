@@ -110,7 +110,7 @@ def finetune_and_save_embeddings(name_suffix, unfreeze_mode, unfreeze_param=None
     )
     
     # Freeze ALL parameters first
-    # Otherwise we will train all the model
+    # Otherwise we will train the whole model
     for param in model.parameters():
         param.requires_grad = False
 
