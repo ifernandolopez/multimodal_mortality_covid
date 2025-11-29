@@ -41,12 +41,17 @@ else:
 X = X.drop(columns=['patient_id', 'hospital_outcome'], errors='ignore')
 X = X.select_dtypes(include=[np.number]).fillna(0)
 
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
+# 1. Split without scalling
 X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42, stratify=y
+    X, y, test_size=0.2, random_state=42, stratify=y
 )
+
+# 2. Standarize only on train to prevent data leakage
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+
+# 3. Apply standarization on test
+X_test = scaler.transform(X_test)
 
 # Convert to tensors
 X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
@@ -100,7 +105,14 @@ structured_df['target'] = structured_df['destin_discharge'].apply(
     lambda x: 1 if str(x).strip().lower() in ['death', 'deceased', 'fallecido'] else 0
 )
 
-features = pd.DataFrame(X_scaled, columns=X.columns)
+# Prepare numerical features (exclude patient_id and target from X; reattach patient_id)
+# Scale all X using the scaler learned in train 
+# This is not a data leakage: the scaler only knows means/stds in train
+X_all_scaled = scaler.transform(X)
+SCALER_PATH = SCRIPT_DIR / "cdsl_structured_scaler.pkl"
+joblib.dump(scaler, SCALER_PATH)
+
+features = pd.DataFrame(X_all_scaled, columns=X.columns)
 features['patient_id'] = patients['patient_id']
 
 ehr_data = pd.merge(structured_df[['patient_id', 'target']], features, on='patient_id')

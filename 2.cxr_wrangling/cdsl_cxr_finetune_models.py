@@ -108,6 +108,11 @@ def finetune_and_save_embeddings(name_suffix, unfreeze_mode, unfreeze_param=None
         nn.Linear(num_features, 1),
         nn.Sigmoid()
     )
+    
+    # Freeze ALL parameters first
+    # Otherwise we will train all the model
+    for param in model.parameters():
+        param.requires_grad = False
 
     if unfreeze_mode == "params":
             # Unfreeze the last N parameters by index

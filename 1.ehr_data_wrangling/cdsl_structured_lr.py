@@ -71,7 +71,13 @@ structured_df['target'] = structured_df['destin_discharge'].apply(
 )
 
 # Prepare numerical features (exclude patient_id and target from X; reattach patient_id)
-features = X.copy()
+# Scale all X using the scaler learned in train 
+# This is not a data leakage: the scaler only knows means/stds in train
+X_all_scaled = scaler.transform(X)
+SCALER_PATH = SCRIPT_DIR / "cdsl_structured_scaler.pkl"
+joblib.dump(scaler, SCALER_PATH)
+
+features = pd.DataFrame(X_all_scaled, columns=X.columns)
 features['patient_id'] = patients['patient_id']
 
 # Merge target with features to form the final DataFrame for fusion
