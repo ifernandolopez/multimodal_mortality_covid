@@ -41,10 +41,17 @@ else:
 X = X.drop(columns=['patient_id', 'hospital_outcome'], errors='ignore')
 X = X.select_dtypes(include=[np.number]).fillna(0)
 
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+# 1. Split without scalling
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
 
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42, stratify=y)
+# 2. Standarize only on train to prevent data leakage
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+
+# 3. Apply standarization on test
+X_test = scaler.transform(X_test)
 
 # Logistic regression model as baseline
 model = LogisticRegression(max_iter=1000)
